@@ -13159,16 +13159,55 @@ div#notebook {
 </div>
 </div>
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><b>Features of df_bids:</b><br/>
+● created: time of the bid<br />
+● leadID: unique ID of lead<br />
+● max_bid: bid offered by Abc LLC for that particular lead<br />
+● won: 1 if their bid was the highest and they won the bid, 0 otherwise</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Reading Bids csv file</span>
+<span class="n">df_bids</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;C:/Users/ZsoltNagy/Desktop/github_projects/ABC_LLC_Leads_Boberdoo/ABC_LLC_Leads/Data/bids_hw.csv&#39;</span><span class="p">)</span>
+<span class="n">df_bids</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><b>Features of df_leads:</b><br />
+● leadID: unique ID of the lead<br />
+● state_18: the state where the lead lives in<br />
+● gender_18: lead's gender, which is 1 if male, and 2 if female<br />
+● estimated_household_income_18: this is the lead's estimation of their own household income per year in dollars <br />
+● cpa_status_18: 1 for closed leads, 0 for lost leads<br />
+● premium_amount_18: value of the contract signed, to be paid monthly in dollars<br /></p>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_bids</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;C:/Users/ZsoltNagy/Desktop/github_projects/ABC_LLC_Leads_Boberdoo/ABC_LLC_Leads/Data/bids_hw.csv&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">df_bids</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
-
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Reading Leads csv file</span>
 <span class="n">df_leads</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;C:/Users/ZsoltNagy/Desktop/github_projects/ABC_LLC_Leads_Boberdoo/ABC_LLC_Leads/Data/leads_hw.csv&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">df_leads</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">df_leads</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 
     </div>
