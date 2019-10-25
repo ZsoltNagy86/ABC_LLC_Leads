@@ -82,6 +82,13 @@ df.info()
 df.describe()
 
 
+# In[196]:
+
+
+#Missing values computation
+df.isnull().sum()
+
+
 # #### <span style="color:darkgray"> Univariate analysis on closed leads </span>
 
 # In[180]:
@@ -106,8 +113,8 @@ df_closed.describe()
 
 
 # Distribution of gender 
-sns.countplot(x='gender_18', data=df_closed, palette="BuPu");
-plt.title('Distribution of Gender');
+sns.countplot(x='gender_18', data=df_closed, palette="BuPu")
+plt.title('Distribution of Gender')
 
 
 # In[184]:
@@ -176,18 +183,19 @@ plt.xlabel('Contract Value')
 
 
 
-# In[193]:
+# In[229]:
 
 
-fig, ax = plt.subplots()
+# Distribution of closed leads by states 
+df_state = df_closed >> group_by(X.state_18, X.gender_18) >> summarize(N=n(X.leadID))
 
-ax.hist(df_closed['premium_amount_18'], 20)
-ax.set_title('Historgram')
-ax.set_xlabel('bin range')
-ax.set_ylabel('frequency')
 
-fig.tight_layout()
-plt.show()
+plt.figure(figsize=(16, 16))
+g = sns.catplot(x='state_18', y='N', hue='gender_18', data=df_state, palette="BuPu", kind='bar', legend=False)
+plt.title('Distribution of leads by states')
+plt.legend(title='Gender', loc='upper left', labels=['Male', 'Female'])
+g.fig.set_figwidth(10)
+g.fig.set_figheight(7)
 
 
 # In[10]:
