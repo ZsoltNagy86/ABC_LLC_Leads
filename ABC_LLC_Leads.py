@@ -31,7 +31,7 @@ import seaborn as sns
 # ● max_bid: bid offered by Abc LLC for that particular lead<br />
 # ● won: 1 if their bid was the highest and they won the bid, 0 otherwise
 
-# In[14]:
+# In[2]:
 
 
 # Reading Bids csv file
@@ -47,7 +47,7 @@ df_bids.head(5)
 # ● cpa_status_18: 1 for closed leads, 0 for lost leads<br />
 # ● premium_amount_18: value of the contract signed, to be paid monthly in dollars<br />
 
-# In[15]:
+# In[3]:
 
 
 # Reading Leads csv file
@@ -55,17 +55,143 @@ df_leads = pd.read_csv('C:/Users/ZsoltNagy/Desktop/github_projects/ABC_LLC_Leads
 df_leads.head(5)
 
 
-# ### <span style="color:dimgray">Merging dataset</span>
+# ### <span style="color:dimgray"> Merging dataset </span>
 
-# In[17]:
+# In[87]:
 
 
 df = df_leads >> left_join(df_bids, by = "leadID")
 df.head(10)
 
 
-# In[ ]:
+# ### <span style="color:dimgray"> Abc LLC's current most typical client </span>
+
+# #### <span style="color:darkgray"> Exploring the dataset </span>
+
+# In[5]:
+
+
+# Checking the type of variables
+df.info()
+
+
+# In[6]:
+
+
+# Describing continuous variables
+df.describe()
+
+
+# #### <span style="color:darkgray"> Univariate analysis on closed leads </span>
+
+# In[180]:
+
+
+df_closed = df >> mask(X.cpa_status_18 == 1)
+
+
+# In[181]:
+
+
+df_closed.dtypes
+
+
+# In[182]:
+
+
+df_closed.describe()
+
+
+# In[183]:
+
+
+# Distribution of gender 
+sns.countplot(x='gender_18', data=df_closed, palette="BuPu");
+plt.title('Distribution of Gender');
+
+
+# In[184]:
+
+
+sns.boxplot(x="age_18", data=df_closed, orient="v", palette="BuPu")
+
+
+# In[185]:
+
+
+# Distribution of ages
+
+df_closed.hist('age_18', bins=30)
+plt.title('Distribution of Age')
+plt.xlabel('Age')
+
+
+# In[195]:
+
+
+sns.boxplot(x="estimated_household_income_18", data=df_closed, orient="v", palette="BuPu")
+
+
+# In[188]:
+
+
+#Excluding the outlier case 
+df_closed = df_closed >> mask(X.estimated_household_income_18 < 250000)
+
+
+# In[189]:
+
+
+df_closed.hist('estimated_household_income_18', bins=20)
+plt.title('Distribution of HH Income')
+plt.xlabel('HH Income')
+
+
+# In[190]:
+
+
+sns.boxplot(x="premium_amount_18", data=df_closed, orient="v", palette="BuPu")
+
+
+# In[191]:
+
+
+#Excluding the outlier case 
+df_closed = df_closed >> mask(X.premium_amount_18 < max(df_closed['premium_amount_18'])) 
+
+
+# In[194]:
+
+
+df_closed = df_closed >> mask(X.premium_amount_18 > 0) 
+
+df_closed.hist(column='premium_amount_18', bins=25)
+plt.title('Value of the contract')
+plt.xlabel('Contract Value')
+
+
+# In[172]:
 
 
 
+
+
+# In[193]:
+
+
+fig, ax = plt.subplots()
+
+ax.hist(df_closed['premium_amount_18'], 20)
+ax.set_title('Historgram')
+ax.set_xlabel('bin range')
+ax.set_ylabel('frequency')
+
+fig.tight_layout()
+plt.show()
+
+
+# In[10]:
+
+
+df >> mask(X.cpa_status_18 == 1) >> group_by(X.gender_18, X.state_18) >> summarize(age = X.age_18.mean(), income = X.estimated_household_income_18.mean(), contr_size = X.premium_amount_18.mean())
 
