@@ -5,7 +5,7 @@
 
 # ### <span style="color:dimgray">Importing packages</span>
 
-# In[3]:
+# In[1]:
 
 
 # Importing general packages
@@ -31,11 +31,11 @@ import seaborn as sns
 # ● max_bid: bid offered by Abc LLC for that particular lead<br />
 # ● won: 1 if their bid was the highest and they won the bid, 0 otherwise
 
-# In[ ]:
+# In[14]:
 
 
 # Reading Bids csv file
-df_bids = pd.read_csv('C:/Users/ZsoltNagy/Desktop/github_projects/ABC_LLC_Leads_Boberdoo/ABC_LLC_Leads/Data/bids_hw.csv')
+df_bids = pd.read_csv('C:/Users/ZsoltNagy/Desktop/github_projects/ABC_LLC_Leads_Boberdoo/ABC_LLC_Leads/Data/bids_hw.csv', index_col=0)
 df_bids.head(5)
 
 
@@ -47,10 +47,25 @@ df_bids.head(5)
 # ● cpa_status_18: 1 for closed leads, 0 for lost leads<br />
 # ● premium_amount_18: value of the contract signed, to be paid monthly in dollars<br />
 
-# In[6]:
+# In[15]:
 
 
 # Reading Leads csv file
-df_leads = pd.read_csv('C:/Users/ZsoltNagy/Desktop/github_projects/ABC_LLC_Leads_Boberdoo/ABC_LLC_Leads/Data/leads_hw.csv')
+df_leads = pd.read_csv('C:/Users/ZsoltNagy/Desktop/github_projects/ABC_LLC_Leads_Boberdoo/ABC_LLC_Leads/Data/leads_hw.csv', index_col=0)
 df_leads.head(5)
+
+
+# ### <span style="color:dimgray">Merging dataset</span>
+
+# In[17]:
+
+
+df = df_leads >> left_join(df_bids, by = "leadID")
+df.head(10)
+
+
+# In[ ]:
+
+
+
 

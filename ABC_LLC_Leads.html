@@ -13129,7 +13129,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Importing general packages</span>
@@ -13173,15 +13173,108 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Reading Bids csv file</span>
-<span class="n">df_bids</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;C:/Users/ZsoltNagy/Desktop/github_projects/ABC_LLC_Leads_Boberdoo/ABC_LLC_Leads/Data/bids_hw.csv&#39;</span><span class="p">)</span>
+<span class="n">df_bids</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;C:/Users/ZsoltNagy/Desktop/github_projects/ABC_LLC_Leads_Boberdoo/ABC_LLC_Leads/Data/bids_hw.csv&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">df_bids</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>C:\Users\ZsoltNagy\Anaconda3\lib\site-packages\numpy\lib\arraysetops.py:522: FutureWarning: elementwise comparison failed; returning scalar instead, but in the future will perform elementwise comparison
+  mask |= (ar1 == a)
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[14]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>created</th>
+      <th>leadID</th>
+      <th>max_bid</th>
+      <th>won</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>2017-12-22 16:08:21</td>
+      <td>4</td>
+      <td>22.0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2018-01-18 16:18:19</td>
+      <td>30</td>
+      <td>4.0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2018-01-22 16:08:57</td>
+      <td>120</td>
+      <td>5.0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2018-01-23 17:28:09</td>
+      <td>258</td>
+      <td>5.0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>2018-01-23 18:16:10</td>
+      <td>266</td>
+      <td>6.0</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -13202,11 +13295,11 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Reading Leads csv file</span>
-<span class="n">df_leads</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;C:/Users/ZsoltNagy/Desktop/github_projects/ABC_LLC_Leads_Boberdoo/ABC_LLC_Leads/Data/leads_hw.csv&#39;</span><span class="p">)</span>
+<span class="n">df_leads</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;C:/Users/ZsoltNagy/Desktop/github_projects/ABC_LLC_Leads_Boberdoo/ABC_LLC_Leads/Data/leads_hw.csv&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">df_leads</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 
@@ -13220,33 +13313,312 @@ div#notebook {
 
 <div class="output_area">
 
-    <div class="prompt"></div>
+    <div class="prompt output_prompt">Out[15]:</div>
 
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>   Unnamed: 0              created  leadID  max_bid  won
-0           1  2017-12-22 16:08:21       4     22.0    1
-1           2  2018-01-18 16:18:19      30      4.0    1
-2           3  2018-01-22 16:08:57     120      5.0    1
-3           4  2018-01-23 17:28:09     258      5.0    1
-4           5  2018-01-23 18:16:10     266      6.0    1
-   Unnamed: 0  leadID state_18  gender_18  age_18  \
-0           1       4       IL          1   37.00   
-1           2      30       NY          2   43.35   
-2           3     120       NY          1   32.96   
-3           4     258       NY          1   34.82   
-4           5     266       NY          2   40.35   
 
-   estimated_household_income_18  cpa_status_18  premium_amount_18  
-0                          45000            1.0                700  
-1                          65000            0.0                  0  
-2                          90000            0.0                  0  
-3                          65000            0.0                  0  
-4                          65000            0.0                  0  
-</pre>
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>leadID</th>
+      <th>state_18</th>
+      <th>gender_18</th>
+      <th>age_18</th>
+      <th>estimated_household_income_18</th>
+      <th>cpa_status_18</th>
+      <th>premium_amount_18</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>4</td>
+      <td>IL</td>
+      <td>1</td>
+      <td>37.00</td>
+      <td>45000</td>
+      <td>1.0</td>
+      <td>700</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>30</td>
+      <td>NY</td>
+      <td>2</td>
+      <td>43.35</td>
+      <td>65000</td>
+      <td>0.0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>120</td>
+      <td>NY</td>
+      <td>1</td>
+      <td>32.96</td>
+      <td>90000</td>
+      <td>0.0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>258</td>
+      <td>NY</td>
+      <td>1</td>
+      <td>34.82</td>
+      <td>65000</td>
+      <td>0.0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>266</td>
+      <td>NY</td>
+      <td>2</td>
+      <td>40.35</td>
+      <td>65000</td>
+      <td>0.0</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
 </div>
 </div>
 
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Merging-dataset"><span style="color:dimgray">Merging dataset</span><a class="anchor-link" href="#Merging-dataset">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">df_leads</span> <span class="o">&gt;&gt;</span> <span class="n">left_join</span><span class="p">(</span><span class="n">df_bids</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s2">&quot;leadID&quot;</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[17]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>leadID</th>
+      <th>state_18</th>
+      <th>gender_18</th>
+      <th>age_18</th>
+      <th>estimated_household_income_18</th>
+      <th>cpa_status_18</th>
+      <th>premium_amount_18</th>
+      <th>created</th>
+      <th>max_bid</th>
+      <th>won</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>4</td>
+      <td>IL</td>
+      <td>1</td>
+      <td>37.00</td>
+      <td>45000</td>
+      <td>1.0</td>
+      <td>700</td>
+      <td>2017-12-22 16:08:21</td>
+      <td>22.0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>30</td>
+      <td>NY</td>
+      <td>2</td>
+      <td>43.35</td>
+      <td>65000</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>2018-01-18 16:18:19</td>
+      <td>4.0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>120</td>
+      <td>NY</td>
+      <td>1</td>
+      <td>32.96</td>
+      <td>90000</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>2018-01-22 16:08:57</td>
+      <td>5.0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>258</td>
+      <td>NY</td>
+      <td>1</td>
+      <td>34.82</td>
+      <td>65000</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>2018-01-23 17:28:09</td>
+      <td>5.0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>266</td>
+      <td>NY</td>
+      <td>2</td>
+      <td>40.35</td>
+      <td>65000</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>2018-01-23 18:16:10</td>
+      <td>6.0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>348</td>
+      <td>NY</td>
+      <td>1</td>
+      <td>36.00</td>
+      <td>35000</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>2018-01-23 22:29:37</td>
+      <td>4.0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>354</td>
+      <td>NY</td>
+      <td>1</td>
+      <td>36.69</td>
+      <td>35000</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>2018-01-23 22:30:47</td>
+      <td>4.0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>360</td>
+      <td>MA</td>
+      <td>2</td>
+      <td>55.02</td>
+      <td>35000</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>2018-01-23 22:39:53</td>
+      <td>4.0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>370</td>
+      <td>MA</td>
+      <td>1</td>
+      <td>57.89</td>
+      <td>90000</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>2018-01-23 22:44:28</td>
+      <td>4.0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>382</td>
+      <td>NY</td>
+      <td>2</td>
+      <td>34.89</td>
+      <td>76000</td>
+      <td>1.0</td>
+      <td>554</td>
+      <td>2018-01-23 22:49:55</td>
+      <td>3.0</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
 </div>
 </div>
 
