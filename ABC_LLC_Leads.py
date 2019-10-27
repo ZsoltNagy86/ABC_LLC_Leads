@@ -5,7 +5,7 @@
 
 # ### <span style="color:dimgray">Importing packages</span>
 
-# In[1]:
+# In[80]:
 
 
 # Importing general packages
@@ -21,6 +21,14 @@ import matplotlib.cm as cm
 import matplotlib.colors as colors
 get_ipython().run_line_magic('matplotlib', 'inline')
 import seaborn as sns
+
+# Importing packages for encoding and standardization
+from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import RobustScaler
+
+# Importing packages for modeling
+from sklearn.cluster import KMeans
 
 
 # ### <span style="color:dimgray">Loading data</span>
@@ -88,7 +96,7 @@ df.describe()
 df.isnull().sum()
 
 
-# #### <span style="color:darkgray"> Univariate analysis on closed leads </span>
+# #### <span style="color:steelblue"> Univariate analysis on closed leads </span>
 
 # In[8]:
 
@@ -229,4 +237,152 @@ df_closed >> group_by(X.Income_c) >> summarize(N=n(X.leadID), Min=X.estimated_ho
 #Finding the 5 most typical customer groups
 df_typ_cust = df_closed >> group_by(X.state_18, X.gender_18, X.Age_c, X.Income_c) >> summarize(N = n(X.leadID))
 df_typ_cust.sort_values(by='N', ascending=False).head(5)
+
+
+# ### <span style="color:dimgray"> Customer segmentation using K-means clustering </span>
+
+# #### <span style="color:steelblue"> Customer segmentation on closed leads </span>
+
+# In[169]:
+
+
+# One-hot-encoding categorical variables
+
+# Selecting relevant features
+df_closed_enc = df_closed >> select(X.leadID, 
+                                    X.gender_18, 
+                                    X.age_18, 
+                                    X.estimated_household_income_18, 
+                                    X.premium_amount_18, 
+                                    X.state_18)
+
+cat_columns = ["gender_18", "state_18"]
+df_closed_enc = pd.get_dummies(df_closed_enc, 
+                               prefix_sep="__",
+                               columns=cat_columns)
+
+df_closed_enc = df_closed_enc.set_index('leadID')
+
+df_closed_enc.head(10)
+
+
+# In[170]:
+
+
+# Normalizing/Standardizing data to ensure that unit of dimension does not distort relative near-ness of observations
+
+# Using standardization because of presence of possible outliers: 
+df_columns = list(df_closed_enc.columns)
+rsc = RobustScaler()
+df_closed_st = rsc.fit_transform(df_closed_enc)
+df_closed_st = pd.DataFrame(df_closed_st, columns=df_columns)
+df_closed_st.head(10)
+
+
+# In[171]:
+
+
+# Determining the number of clusters for K-means
+clusters_range = range(1, 20)
+kmeans = [KMeans(n_clusters=i) for i in clusters_range]
+score = [kmeans[i].fit(df_closed_st).score(df_closed_st) for i in range(len(kmeans))]
+
+plt.plot(clusters_range,score)
+plt.xlabel('Number of Clusters')
+plt.ylabel('Score')
+plt.title('Number of clusters by score')
+plt.show()
+
+
+# In[98]:
+
+
+clusters_range = [2,3,4,5,6,7,8,9,10,11,12,13,14]
+inertias =[] 
+for c in clusters_range:
+    kmeans = KMeans(n_clusters=c, random_state=0).fit(df_closed_st)
+    inertias.append(kmeans.inertia_)
+plt.figure()
+plt.plot(clusters_range,inertias, marker='o')
+
+
+# In[173]:
+
+
+# Running K-means cluster on the encoded dataframe with 4 clusters based on elbow method
+kmens = KMeans(n_clusters=4, random_state=0).fit(df_closed_st)
+# Adding cluster variable to closed lead dataframe 
+df_closed['Clusters'] = kmens.labels_
+df_closed
+
+
+# In[190]:
+
+
+# Checking the clusters characteristics
+
+#Creating cluster df
+cluster_df = df_closed >> group_by(X.Clusters) >> summarize(Gender_dist = X.gender_18.mean(), 
+                                                            Avg_Age = X.age_18.mean(), 
+                                                            Avg_Inc = X.estimated_household_income_18.mean(), 
+                                                            Avg_Contr_size = X.premium_amount_18.mean(),
+                                                            Avg_MBids = X.max_bid.mean(),
+                                                            SD_MBids = sd(X.max_bid),
+                                                            N=n(X.leadID))
+
+# Adding info about from what states existing customers are coming from 
+df_freq_state = df_closed >> group_by(X.state_18, X.Clusters) >> summarize(State_N = n(X.state_18))
+df_freq_state = df_freq_state.sort_values(by=['Clusters', 'State_N'], ascending = [True, False])
+df_freq_state = df_freq_state.pivot(index='Clusters', columns='state_18', values='State_N')
+cluster_df['Most_Freq_States'] = pd.Series()
+for rows in range(0,len(df_freq_state)):
+    string = ", "
+    string = string.join(df_freq_state.loc[rows].sort_values(ascending=False).index[0:5])
+    cluster_df.loc[rows, 'Most_Freq_States'] = string
+cluster_df
+
+
+# #### <span style="color:steelblue"> Customer segmentation on lost leads </span>
+
+# In[180]:
+
+
+# Creating dataframe for lost leads
+df_lost = df >> mask(X.cpa_status_18 == 0)
+
+
+# In[184]:
+
+
+# Checking dataframe
+df_lost.describe()
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+# One-hot-encoding categorical variables
+
+# Selecting relevant features
+df_closed_enc = df_closed >> select(X.leadID, 
+                                    X.gender_18, 
+                                    X.age_18, 
+                                    X.estimated_household_income_18, 
+                                    X.premium_amount_18, 
+                                    X.state_18)
+
+cat_columns = ["gender_18", "state_18"]
+df_closed_enc = pd.get_dummies(df_closed_enc, 
+                               prefix_sep="__",
+                               columns=cat_columns)
+
+df_closed_enc = df_closed_enc.set_index('leadID')
+
+df_closed_enc.head(10)
 
