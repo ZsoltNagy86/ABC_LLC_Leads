@@ -5,7 +5,7 @@
 
 # ### <span style="color:dimgray">Importing packages</span>
 
-# In[165]:
+# In[1]:
 
 
 # Importing general packages
@@ -36,6 +36,7 @@ import scipy.cluster.hierarchy as shc
 # Importing packages for modeling
 from sklearn.linear_model import LogisticRegression
 import statsmodels.api as sm
+import statsmodels.formula.api as smf
 
 
 # ### <span style="color:dimgray">Loading data</span>
@@ -467,7 +468,7 @@ df_closed['Clusters_hc'] = cluster.fit_predict(df_closed_st_rc)
 df_closed.head(10)
 
 
-# In[69]:
+# In[40]:
 
 
 # Checking the clusters characteristics
@@ -502,7 +503,7 @@ cluster_df_hc
 
 # #### <span style="color:sienna"> <i> Considerations on Cluster analysis </i></span>
 
-# 1. Clusters' characteristics are highly depends on encoding and standardization method. Mixed binnary and continous feature space makes the analysis challenging. Using Kmeans and hierarchical cluster algortihms provided fairly different outcomes.
+# 1. Clusters' characteristics are highly depend on encoding and standardization method. Mixed binnary and continous feature space makes the analysis challenging. Using Kmeans and hierarchical cluster algortihms provided fairly different outcomes.
 # 2. It is likely that the importance of features varies depending on standardization method. Variance between groups' by features varies by chosen method.
 # 3. For this analysis, hierarchical cluster approach was chosen considering it provides failry good result regarding difference between clusters for each feature
 
@@ -513,10 +514,10 @@ cluster_df_hc
 # -> <b>Cluster 4:</b> Exclusively men, youngest average age, more HH in the low income group, having contract less than average, mostly from NY, IL, OH <br/>  
 
 # ##### <span style="color:sienna"> <i> Targeting strategy:</i></span>
-# In general, the first and forth clusters could be targeted considering the lower number of successfull sales there. Plus, first cluster's high average contract size can be a very good starting point to maximize income. In this group, we can see the largest amount of purchasing power.
-# The company is strong in NY, MA and WA, in almost every segment. Other states like NJ and CT could be also in the point of interest, since they are present in case of more than one segment.
-# Gender specificity can be recognized in the sample meaning that, it may be a good idea to target gender separately.
-# As regards age, the company is successfull in the middle aged customers, while may want to increase the number of successfull sales in the younger and older adult groups.
+# In general, the first and fourth clusters could be targeted considering the lower number of successfull sales there. Plus, first cluster's high average contract size can be a very good starting point to maximize income. In this group, we can see the largest purchasing power.
+# The company is strong in NY, MA and WA, in almost every segment. Other states like NJ and CT could also be in the point of interest, since they are present in case of more than one segment.
+# Gender specificity can be recognized in the sample, meaning that it may be a good idea to target gender separately.
+# As regards age, the company is successfull in the middle aged customers, while it may want to increase the number of successfull sales in the younger and older adult groups.
 
 # ### <span style="color:steelblue"> Customer segmentation on lost leads </span>
 
@@ -634,14 +635,14 @@ cluster_df_lost
 
 # #### <span style="color:darkgray"> Analyzing Potential Customer Base </span> 
 
-# In[72]:
+# In[50]:
 
 
 # Checking customer segments again
 cluster_df_hc
 
 
-# In[137]:
+# In[51]:
 
 
 # Converting created feature in df to timestamp
@@ -655,10 +656,10 @@ mp_cs1_df = df >> mask(X.age_18 >=53,
                        X.created >= pd.to_datetime('2018-02-15 12:55:28'),
            (X.state_18 == 'NY') | (X.state_18 == 'MA') | (X.state_18 == 'WA'))
 print('Customer base for Segment 1: ' + str(len(mp_cs1_df)))
-print('Estimated income potential based on average contract size for segment 1: ' + str(len(mp_cs1_df)*cluster_df_hc.loc[0,'Avg_Contr_size']) + str(' USD'))
+print('Estimated potential income  based on average contract size for segment 1: ' + str(len(mp_cs1_df)*cluster_df_hc.loc[0,'Avg_Contr_size']) + str(' USD'))
 
 
-# In[138]:
+# In[52]:
 
 
 # Market potential for customer segment 2
@@ -670,10 +671,10 @@ mp_cs2_df = df >> mask(X.gender_18 == 1,
                        X.created >= pd.to_datetime('2018-02-15 12:55:28'),
                        (X.state_18 == 'NJ') | (X.state_18 == 'MA') | (X.state_18 == 'WA'))
 print('Customer base for Segment 2: ' + str(len(mp_cs2_df)))
-print('Estimated income potential based on average contract size for segment 2: ' + str(len(mp_cs2_df)*cluster_df_hc.loc[1,'Avg_Contr_size']) + str(' USD'))
+print('Estimated potential income based on average contract size for segment 2: ' + str(len(mp_cs2_df)*cluster_df_hc.loc[1,'Avg_Contr_size']) + str(' USD'))
 
 
-# In[139]:
+# In[53]:
 
 
 # Market potential for customer segment 3
@@ -685,10 +686,10 @@ mp_cs3_df = df >> mask(X.gender_18 == 2,
                        X.created >= pd.to_datetime('2018-02-15 12:55:28'),
                        (X.state_18 == 'NY') | (X.state_18 == 'MA') | (X.state_18 == 'WA'))
 print('Customer base for Segment 3: ' + str(len(mp_cs3_df)))
-print('Estimated income potential based on average contract size for segment 3: ' + str(len(mp_cs3_df)*cluster_df_hc.loc[2,'Avg_Contr_size']) + str(' USD'))
+print('Estimated potential income based on average contract size for segment 3: ' + str(len(mp_cs3_df)*cluster_df_hc.loc[2,'Avg_Contr_size']) + str(' USD'))
 
 
-# In[140]:
+# In[54]:
 
 
 # Market potential for customer segment 4
@@ -700,163 +701,55 @@ mp_cs4_df = df >> mask(X.gender_18 == 1,
                        X.created >= pd.to_datetime('2018-02-15 12:55:28'),
                        (X.state_18 == 'NY') | (X.state_18 == 'MA') | (X.state_18 == 'WA'))
 print('Customer base for Segment 4: ' + str(len(mp_cs4_df)))
-print('Estimated income potential based on average contract size for segment 4: ' + str(len(mp_cs4_df)*cluster_df_hc.loc[3,'Avg_Contr_size']) + str(' USD'))
+print('Estimated potential income based on average contract size for segment 4: ' + str(len(mp_cs4_df)*cluster_df_hc.loc[3,'Avg_Contr_size']) + str(' USD'))
 
 
 # ### <span style="color:steelblue"> How much more Abc LLC should bid on average on the segments to increase their income by 30% </span>
 
-# <b> Strategy for analysis: </b> Running logistic regression to predict whether a lead will be won. 
-
-# <b><i>Input variables:</b></i> <br/>
-# - gender_18<br/>
-# - age_18<br/>
-# - estimated_household_income_18<br/>
-# - max_bid <br/>
-# 
-# <b><i>Target variable:</b></i> <br/>
-# - won
-
-# In[159]:
+# In[55]:
 
 
-# Creating new dataframe for the regression
-df_log_enc = df >> select(X.leadID, X.gender_18, X.age_18, X.estimated_household_income_18, X.state_18, X.max_bid )
-
-# One-hot-encoding categorical variables
-
-cat_columns = ["gender_18", "state_18"]
-df_log_enc = pd.get_dummies(df_log_enc,
-                            prefix_sep="__",
-                            columns=cat_columns,
-                            drop_first=True)
-
-df_log_enc.head(10)
+# Creating new data_frame for cases where cpa status is known
+df_won = df[df['cpa_status_18'].notna()] 
+df_won = df_won >> mask(X.premium_amount_18 < max(df_won['premium_amount_18'])) 
 
 
-# In[162]:
+# In[56]:
 
 
-# Using MinMaxScaler for Standardization: 
-mms = MinMaxScaler()
-
-# Scaling dataframe
-df_columns = ['age_18', 'estimated_household_income_18', 'max_bid']
-df_log_mm = mms.fit_transform(df_log_enc[['age_18', 'estimated_household_income_18', 'max_bid']])
-df_log_mm = pd.DataFrame(df_log_mm, columns=df_columns)
-df_log_mm['leadID'] = list(df_log_enc['leadID'])
-df_log_mm = df_log_mm >> left_join(df_log_enc, by='leadID') >> drop(['leadID', 'age_18_y', 'estimated_household_income_18_y', 'max_bid_y'])
-df_log_mm.head(10)
-
-
-# In[167]:
-
-
-logmodel = sm.Logit(df['won'], df_log_mm)
-result = logmodel.fit()
-result.summary()
-
-
-# In[168]:
-
-
-np.exp(result.params)
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-# Normalizing/Standardizing data to ensure that unit of dimension does not distort relative near-ness of observations
-
-# Using standardization because of presence of possible outliers: 
-df_columns = ['age_18', 'estimated_household_income_18']
-rsc = RobustScaler()
-df_lost_st = rsc.fit_transform(df_lost_enc[['age_18', 'estimated_household_income_18']])
-df_lost_st = pd.DataFrame(df_lost_st, columns=df_columns)
-df_lost_st['leadID'] = list(df_lost_enc['leadID'])
-df_lost_st = df_lost_st >> left_join(df_lost_enc, by='leadID') >> drop(['leadID', 'age_18_y', 'estimated_household_income_18_y'])
-df_lost_st.head(10)
-
-
-# In[ ]:
-
-
-# Determining the number of clusters for K-means
-clusters_range = range(1, 20)
-kmeans = [KMeans(n_clusters=i) for i in clusters_range]
-score = [kmeans[i].fit(df_lost_st).score(df_lost_st) for i in range(len(kmeans))]
-
-plt.plot(clusters_range,score)
-plt.xlabel('Number of Clusters')
-plt.ylabel('Score')
-plt.title('Number of clusters by score')
+# Checking the scatter plot about how max bids relates to contract size
+plt.scatter(df_won['max_bid'], df_won['premium_amount_18'], alpha=0.5)
+plt.title('Scatter plot')
+plt.xlabel('x')
+plt.ylabel('y')
 plt.show()
 
 
-# In[ ]:
+# In[57]:
 
 
-clusters_range = [2,3,4,5,6,7,8,9,10,11,12,13,14]
-inertias =[] 
-for c in clusters_range:
-    kmeans = KMeans(n_clusters=c, random_state=0).fit(df_lost_st)
-    inertias.append(kmeans.inertia_)
-plt.figure()
-plt.plot(clusters_range,inertias, marker='o')
+# Running regression analysis with one predictor
+# formula: response ~ predictor + predictor
+est = smf.ols(formula='premium_amount_18 ~ max_bid', data=df_won).fit()
+est.summary()
 
 
-# In[ ]:
+# In[59]:
 
 
-# Running K-means cluster on the encoded dataframe with 4 clusters based on elbow method
-kmens = KMeans(n_clusters=4, random_state=0).fit(df_lost_st)
-# Adding cluster variable to closed lead dataframe 
-df_lost['Clusters'] = kmens.labels_
-df_lost.head(10)
+total_inc = df_won >> mask(X.created > pd.to_datetime('2018-01-01 0:0:1'), X.created < pd.to_datetime('2019-01-01 0:0:1')) >> select(X.premium_amount_18)
+sum(total_inc.iloc[:,0])
+print('Total income of ABC LLC in 2018: ' + str(sum(total_inc.iloc[:,0])))
+print('30% of total income of ABC LLC in 2018: ' + str(sum(total_inc.iloc[:,0])*0.3))
+print('The amount that LLC should spend on bidding in average to have 30% increase in income: ' + str(round(sum((total_inc.iloc[:,0])*0.3)/3.0561)))
 
 
-# In[ ]:
-
-
-print(len(df_lost))
-print(len(df_lost_enc))
-print(len(df_lost_st))
-print(len(kmens.labels_))
-
+# #### <span style="color:darkred"> Question 4: Analysis </span>
+# According to the p value, the relationship between the amount of bid and contract size is significant.
+# The coefficient of 3.0561 means that as the max bid variable's unit increases by 1, the predicted value of contract size increases by 3.0561. This means that ABC LLC should increase spend on bidding around 42396 USD in 2019 to meet 30% increase in income. The investment would pay off.
 
 # In[ ]:
 
 
-# Checking the clusters characteristics
 
-#Creating cluster df
-cluster_df_lost = df_lost >> group_by(X.Clusters) >> summarize(Gender_dist = X.gender_18.mean(), 
-                                                            Avg_Age = X.age_18.mean(), 
-                                                            Avg_Inc = X.estimated_household_income_18.mean(), 
-                                                            Avg_Contr_size = X.premium_amount_18.mean(),
-                                                            Avg_MBids = X.max_bid.mean(),
-                                                            SD_MBids = sd(X.max_bid),
-                                                            N=n(X.leadID))
-
-# Adding info about what states lost possible customers are coming from 
-df_freq_state = df_lost >> group_by(X.state_18, X.Clusters) >> summarize(State_N = n(X.state_18))
-df_freq_state = df_freq_state.sort_values(by=['Clusters', 'State_N'], ascending = [True, False])
-df_freq_state = df_freq_state.pivot(index='Clusters', columns='state_18', values='State_N')
-cluster_df_lost['Most_Freq_States'] = pd.Series()
-for rows in range(0,len(df_freq_state)):
-    string = ", "
-    string = string.join(df_freq_state.loc[rows].sort_values(ascending=False).index[0:5])
-    cluster_df_lost.loc[rows, 'Most_Freq_States'] = string
-cluster_df_lost
 
