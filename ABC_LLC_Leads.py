@@ -5,7 +5,7 @@
 
 # ### <span style="color:dimgray">Importing packages</span>
 
-# In[41]:
+# In[1]:
 
 
 # Importing general packages
@@ -88,11 +88,19 @@ df.info()
 # In[6]:
 
 
+# Finding out how winning a bid relates to not having info on contract size
+filtered_df = df[df['cpa_status_18'].isna()] 
+filtered_df >> group_by(X.won) >> summarize(N = n(X.leadID))
+
+
+# In[7]:
+
+
 # Describing continuous variables
 df.describe()
 
 
-# In[7]:
+# In[8]:
 
 
 #Missing values computation
@@ -101,25 +109,25 @@ df.isnull().sum()
 
 # #### <span style="color:steelblue"> Univariate analysis on closed leads </span>
 
-# In[8]:
+# In[9]:
 
 
 df_closed = df >> mask(X.cpa_status_18 == 1)
 
 
-# In[9]:
+# In[10]:
 
 
 df_closed.dtypes
 
 
-# In[10]:
+# In[11]:
 
 
 df_closed.describe()
 
 
-# In[11]:
+# In[12]:
 
 
 # Distribution of gender 
@@ -127,13 +135,13 @@ sns.countplot(x='gender_18', data=df_closed, palette="BuPu")
 plt.title('Distribution of Gender')
 
 
-# In[12]:
+# In[13]:
 
 
 sns.boxplot(x="age_18", data=df_closed, orient="v", palette="BuPu")
 
 
-# In[13]:
+# In[14]:
 
 
 # Distribution of ages
@@ -143,13 +151,13 @@ plt.title('Distribution of Age')
 plt.xlabel('Age')
 
 
-# In[14]:
+# In[15]:
 
 
 sns.boxplot(x="estimated_household_income_18", data=df_closed, orient="v", palette="BuPu")
 
 
-# In[15]:
+# In[16]:
 
 
 #Excluding the outlier cases 
@@ -165,7 +173,7 @@ indexes_to_drop = list(outliers_iqr(df_closed['estimated_household_income_18'], 
 df_closed = df_closed.drop(df_closed.index[indexes_to_drop])
 
 
-# In[16]:
+# In[17]:
 
 
 df_closed.hist('estimated_household_income_18', bins=20, color = "lightsteelblue", ec="teal")
@@ -173,20 +181,20 @@ plt.title('Distribution of HH Income')
 plt.xlabel('HH Income')
 
 
-# In[17]:
+# In[18]:
 
 
 sns.boxplot(x="premium_amount_18", data=df_closed, orient="v", palette="BuPu")
 
 
-# In[18]:
+# In[19]:
 
 
 #Excluding the outlier case 
 df_closed = df_closed >> mask(X.premium_amount_18 < max(df_closed['premium_amount_18'])) 
 
 
-# In[19]:
+# In[20]:
 
 
 df_closed = df_closed >> mask(X.premium_amount_18 > 0) 
@@ -196,7 +204,7 @@ plt.title('Value of the contract')
 plt.xlabel('Contract Value')
 
 
-# In[20]:
+# In[21]:
 
 
 # Distribution of closed leads by states 
@@ -211,9 +219,9 @@ g.fig.set_figwidth(10)
 g.fig.set_figheight(7)
 
 
-# ### <span style="color:dimgray"> Abc LLC's current most typical client </span>
+# ### <span style="color:dimgray"> I. Abc LLC's current most typical client </span>
 
-# In[21]:
+# In[22]:
 
 
 # Creating new categorical age variable
@@ -222,28 +230,28 @@ bins=[0, 18, 45, 65, np.inf]
 df_closed['Age_c'] = pd.cut(round(df_closed['age_18'], 0), bins=bins, labels=['Under_18', '18-44', '45-64', '65_and_Above'])
 
 
-# In[22]:
+# In[23]:
 
 
 # Checking classes of age
 df_closed >> group_by(X.Age_c) >> summarize(N=n(X.leadID), Min=X.age_18.min(), Max=X.age_18.max())
 
 
-# In[23]:
+# In[24]:
 
 
 # Creating new categorical income variable
 df_closed['Income_c'] = pd.cut(df_closed['estimated_household_income_18'], bins=4, labels=['Lowest', 'Lower_middle', 'Upper_middle', 'Highest'])
 
 
-# In[24]:
+# In[25]:
 
 
 # Checking classes of income
 df_closed >> group_by(X.Income_c) >> summarize(N=n(X.leadID), Min=X.estimated_household_income_18.min(), Max=X.estimated_household_income_18.max())
 
 
-# In[25]:
+# In[26]:
 
 
 #Finding the 5 most typical customer groups
@@ -255,11 +263,13 @@ df_typ_cust.sort_values(by='N', ascending=False).head(5)
 
 # #### <span style="color:sienna"> <i> The typical client of ABC LLC is a young adult male who lives in New York, whose household income belongs to the lowest segment of the sample and average contract size is around 740 dollars. </i></span>
 
-# ### <span style="color:dimgray"> Customer segmentation using K-means and hierarchical clustering </span>
+# ### <span style="color:dimgray"> II. Customer segmentation using K-means and Hierarchical clustering </span>
 
-# #### <span style="color:steelblue"> Customer segmentation on closed leads </span>
+# ### <span style="color:steelblue"> 1. Customer segmentation on closed leads </span>
 
-# In[26]:
+# #### <span style="color:darkgray"> One-hot-encoding </span>
+
+# In[27]:
 
 
 # One-hot-encoding categorical variables
@@ -280,7 +290,9 @@ df_closed_enc = pd.get_dummies(df_closed_enc,
 df_closed_enc.head(10)
 
 
-# In[27]:
+# #### <span style="color:darkgray"> Running K-Means on data standardized with MinMaxScaler </span>
+
+# In[28]:
 
 
 # Standardizing data to ensure that unit of dimension does not distort relative near-ness of observations
@@ -295,7 +307,7 @@ df_closed_st_mm = df_closed_st_mm >> left_join(df_closed_enc, by='leadID') >> dr
 df_closed_st_mm.head(10)
 
 
-# In[28]:
+# In[29]:
 
 
 # Determining the number of clusters for K-means
@@ -310,7 +322,7 @@ plt.title('Number of clusters by score')
 plt.show()
 
 
-# In[29]:
+# In[30]:
 
 
 clusters_range = [2,3,4,5,6,7,8,9,10,11,12,13,14]
@@ -322,7 +334,7 @@ plt.figure()
 plt.plot(clusters_range,inertias, marker='o')
 
 
-# In[30]:
+# In[31]:
 
 
 # Running K-means cluster on the encoded dataframe with 4 clusters based on elbow method
@@ -332,7 +344,7 @@ df_closed['Clusters_mm'] = kmens.labels_
 df_closed.head(10)
 
 
-# In[33]:
+# In[32]:
 
 
 # Checking the clusters characteristics
@@ -358,7 +370,9 @@ for rows in range(0,len(df_freq_state)):
 cluster_df_mm
 
 
-# In[34]:
+# #### <span style="color:darkgray"> Running K-Means on data standardized with RobustScaler </span>
+
+# In[33]:
 
 
 # Standardizing data to ensure that unit of dimension does not distort relative near-ness of observations
@@ -373,7 +387,7 @@ df_closed_st_rc = df_closed_st_rc >> left_join(df_closed_enc, by='leadID') >> dr
 df_closed_st_rc.head(10)
 
 
-# In[35]:
+# In[34]:
 
 
 clusters_range = [2,3,4,5,6,7,8,9,10,11,12,13,14]
@@ -385,7 +399,7 @@ plt.figure()
 plt.plot(clusters_range,inertias, marker='o')
 
 
-# In[36]:
+# In[35]:
 
 
 # Running K-means cluster on the encoded dataframe with 4 clusters based on elbow method
@@ -395,7 +409,7 @@ df_closed['Clusters_rc'] = kmens.labels_
 df_closed.head(10)
 
 
-# In[37]:
+# In[36]:
 
 
 # Checking the clusters characteristics
@@ -421,41 +435,47 @@ for rows in range(0,len(df_freq_state)):
 cluster_df_rc
 
 
-# In[38]:
+# In[37]:
 
 
 print(cluster_df_mm)
 print(cluster_df_rc)
 
 
-# In[54]:
+# #### <span style="color:darkgray"> Running Hierarchical clustering on data standardized with MinMaxScaler </span>
+
+# In[38]:
 
 
 # Applying hierarchical clustering
 plt.figure(figsize=(10, 7))  
 plt.title("Dendrograms")  
-dend = shc.dendrogram(shc.linkage(df_closed_st_rc, method='ward'))
+dend = shc.dendrogram(shc.linkage(df_closed_st_mm, method='ward'))
 plt.axhline(y=10, color='r', linestyle='--')
 
 
-# In[55]:
+# In[39]:
 
 
-cluster = AgglomerativeClustering(n_clusters=6, affinity='euclidean', linkage='ward')  
+cluster = AgglomerativeClustering(n_clusters=4, affinity='euclidean', linkage='ward')  
 # Adding cluster variable to closed lead dataframe 
 df_closed['Clusters_hc'] = cluster.fit_predict(df_closed_st_rc)
 df_closed.head(10)
 
 
-# In[56]:
+# In[69]:
 
 
 # Checking the clusters characteristics
 
 #Creating cluster df
 cluster_df_hc = df_closed >> group_by(X.Clusters_hc) >> summarize(Gender_dist = X.gender_18.mean(), 
-                                                            Avg_Age = X.age_18.mean(), 
-                                                            Avg_Inc = X.estimated_household_income_18.mean(), 
+                                                            Median_Age = median(X.age_18),
+                                                            FirstQ_Age = median(X.age_18)- IQR(X.age_18)/2, 
+                                                            ThirdQ_Age = median(X.age_18)+ IQR(X.age_18)/2,
+                                                            Median_Inc = median(X.estimated_household_income_18),
+                                                            FirstQ_Inc = median(X.estimated_household_income_18)- IQR(X.estimated_household_income_18)/2,
+                                                            ThirdQ_Inc = median(X.estimated_household_income_18)+ IQR(X.estimated_household_income_18)/2,
                                                             Avg_Contr_size = X.premium_amount_18.mean(),
                                                             Avg_MBids = X.max_bid.mean(),
                                                             SD_MBids = sd(X.max_bid),
@@ -470,6 +490,7 @@ for rows in range(0,len(df_freq_state)):
     string = ", "
     string = string.join(df_freq_state.loc[rows].sort_values(ascending=False).index[0:5])
     cluster_df_hc.loc[rows, 'Most_Freq_States'] = string
+cluster_df_hc[['Median_Age', 'FirstQ_Age', 'ThirdQ_Age', 'Median_Inc', 'FirstQ_Inc', 'ThirdQ_Inc', 'Avg_Contr_size']] = round(cluster_df_hc[['Median_Age', 'FirstQ_Age', 'ThirdQ_Age', 'Median_Inc', 'FirstQ_Inc', 'ThirdQ_Inc', 'Avg_Contr_size']], 0)
 cluster_df_hc
 
 
@@ -481,31 +502,30 @@ cluster_df_hc
 # -> <b>Cluster 3:</b> Exclusively men, youngest average age, from low income HH, having contract size in the first quartile <br/>
 # -> <b>Cluster 4:</b> Exclusively women, middle aged, from low income HH, having contract size around the median  <br/>  
 
-# #### <span style="color:steelblue"> Customer segmentation on lost leads </span>
+# ### <span style="color:steelblue"> Customer segmentation on lost leads </span>
 
-# In[ ]:
+# In[41]:
 
 
 # Creating dataframe for lost leads
 df_lost = df >> mask(X.cpa_status_18 == 0)
-print(len(df_lost))
 
 
-# In[ ]:
+# In[42]:
 
 
 # Checking dataframe
 df_lost.describe()
 
 
-# In[ ]:
+# In[43]:
 
 
 # Checking HH income for detecting outliers
 sns.boxplot(x="estimated_household_income_18", data=df_lost, orient="v", palette="BuPu")
 
 
-# In[ ]:
+# In[44]:
 
 
 indexes_to_drop = list(outliers_iqr(df_lost['estimated_household_income_18'], 3.5))
@@ -513,7 +533,7 @@ indexes_to_drop = list(outliers_iqr(df_lost['estimated_household_income_18'], 3.
 df_lost = df_lost.drop(df_lost.index[indexes_to_drop])
 
 
-# In[ ]:
+# In[45]:
 
 
 df_lost.hist('estimated_household_income_18', bins=30, color = "lightsteelblue", ec="teal")
@@ -522,7 +542,9 @@ plt.suptitle('Lost deals')
 plt.xlabel('HH Income')
 
 
-# In[ ]:
+# #### <span style="color:darkgray"> One-hot-encoding </span>
+
+# In[46]:
 
 
 # One-hot-encoding categorical variables
@@ -543,12 +565,12 @@ df_lost_enc = pd.get_dummies(df_lost_enc,
 df_lost_enc.head(10)
 
 
-# In[ ]:
+# #### <span style="color:darkgray"> Running Hierarchical Clustering on data standardized with MinMaxScaler </span>
+
+# In[47]:
 
 
-from sklearn.preprocessing import MinMaxScaler
-
-# Using standardization because of presence of possible outliers: 
+# Using MinMaxScaler:
 df_columns = ['age_18', 'estimated_household_income_18']
 mms = MinMaxScaler()
 df_lost_st = mms.fit_transform(df_lost_enc[['age_18', 'estimated_household_income_18']])
@@ -556,6 +578,113 @@ df_lost_st = pd.DataFrame(df_lost_st, columns=df_columns)
 df_lost_st['leadID'] = list(df_lost_enc['leadID'])
 df_lost_st = df_lost_st >> left_join(df_lost_enc, by='leadID') >> drop(['leadID', 'age_18_y', 'estimated_household_income_18_y'])
 df_lost_st.head(10)
+
+
+# In[48]:
+
+
+df_lost['Clusters_hc'] = cluster.fit_predict(df_lost_st)
+df_lost.head(10)
+
+
+# In[49]:
+
+
+# Checking the clusters characteristics
+
+#Creating cluster df
+cluster_df_lost = df_lost >> group_by(X.Clusters_hc) >> summarize(Gender_dist = X.gender_18.mean(), 
+                                                            Avg_Age = X.age_18.mean(), 
+                                                            Avg_Inc = X.estimated_household_income_18.mean(),
+                                                            Avg_MBids = X.max_bid.mean(),
+                                                            SD_MBids = sd(X.max_bid),
+                                                            N=n(X.leadID))
+
+# Adding info about what states lost possible customers are coming from 
+df_freq_state = df_lost >> group_by(X.state_18, X.Clusters_hc) >> summarize(State_N = n(X.state_18))
+df_freq_state = df_freq_state.sort_values(by=['Clusters_hc', 'State_N'], ascending = [True, False])
+df_freq_state = df_freq_state.pivot(index='Clusters_hc', columns='state_18', values='State_N')
+cluster_df_lost['Most_Freq_States'] = pd.Series()
+for rows in range(0,len(df_freq_state)):
+    string = ", "
+    string = string.join(df_freq_state.loc[rows].sort_values(ascending=False).index[0:5])
+    cluster_df_lost.loc[rows, 'Most_Freq_States'] = string
+cluster_df_lost
+
+
+# ### <span style="color:steelblue"> Current market potential for customer segments </span>
+
+# <b>Market potential:</b> The entire size of the market for a product at a specific time (in this case last one year counted from the latest lead). It represents the upper limits of the market for a product. Market potential is usually measured either by sales value or sales volume. 
+
+# #### <span style="color:darkgray"> Analyzing Potential Customer Base </span> 
+
+# In[72]:
+
+
+# Checking customer segments again
+cluster_df_hc
+
+
+# In[131]:
+
+
+# Converting created feature in df to timestamp
+df['created'] = pd.to_datetime(df.created) 
+
+# Market potential for customer segment 1
+mp_cs1_df = df >> mask(X.age_18 >=53, 
+                       X.age_18 <= 60, 
+                       X.estimated_household_income_18 >= 71225, 
+                       X.estimated_household_income_18 <= 102575,
+                       X.created >= pd.to_datetime('2018-02-15 12:55:28'),
+           (X.state_18 == 'NY') | (X.state_18 == 'MA') | (X.state_18 == 'WA'))
+print('Customer base for Segment 1: ' + str(len(mp_cs1_df)))
+print('Estimated income potential: ' + str(len(mp_cs1_df)*cluster_df_hc.loc[0,'Avg_Contr_size']) + str(' USD'))
+
+
+# In[134]:
+
+
+# Market potential for customer segment 2
+mp_cs2_df = df >> mask(X.gender_18 == 1,
+                       X.age_18 >=33, 
+                       X.age_18 <= 59, 
+                       X.estimated_household_income_18 >= 38126, 
+                       X.estimated_household_income_18 <= 53876,
+                       X.created >= pd.to_datetime('2018-02-15 12:55:28'),
+                       (X.state_18 == 'NJ') | (X.state_18 == 'MA') | (X.state_18 == 'WA'))
+print('Customer base for Segment 2: ' + str(len(mp_cs2_df)))
+print('Estimated income potential: ' + str(len(mp_cs2_df)*cluster_df_hc.loc[1,'Avg_Contr_size']) + str(' USD'))
+
+
+# In[135]:
+
+
+# Market potential for customer segment 3
+mp_cs3_df = df >> mask(X.gender_18 == 2,
+                       X.age_18 >=33, 
+                       X.age_18 <= 59, 
+                       X.estimated_household_income_18 >= 37000, 
+                       X.estimated_household_income_18 <= 57000,
+                       X.created >= pd.to_datetime('2018-02-15 12:55:28'),
+                       (X.state_18 == 'NY') | (X.state_18 == 'MA') | (X.state_18 == 'WA'))
+print('Customer base for Segment 2: ' + str(len(mp_cs3_df)))
+print('Estimated income potential: ' + str(len(mp_cs3_df)*cluster_df_hc.loc[2,'Avg_Contr_size']) + str(' USD'))
+
+
+# In[136]:
+
+
+# Market potential for customer segment 4
+mp_cs4_df = df >> mask(X.gender_18 == 1,
+                       X.age_18 >=26, 
+                       X.age_18 <= 48, 
+                       X.estimated_household_income_18 >= 35780, 
+                       X.estimated_household_income_18 <= 47420,
+                       X.created >= pd.to_datetime('2018-02-15 12:55:28'),
+                       (X.state_18 == 'NY') | (X.state_18 == 'MA') | (X.state_18 == 'WA'))
+print('Customer base for Segment 2: ' + str(len(mp_cs4_df)))
+print('Estimated income potential: ' + str(len(mp_cs4_df)*cluster_df_hc.loc[3,'Avg_Contr_size']) + str(' USD'))
 
 
 # In[ ]:
@@ -617,32 +746,6 @@ print(len(df_lost))
 print(len(df_lost_enc))
 print(len(df_lost_st))
 print(len(kmens.labels_))
-
-
-# In[ ]:
-
-
-# Checking the clusters characteristics
-
-#Creating cluster df
-cluster_df_lost = df_lost >> group_by(X.Clusters) >> summarize(Gender_dist = X.gender_18.mean(), 
-                                                            Avg_Age = X.age_18.mean(), 
-                                                            Avg_Inc = X.estimated_household_income_18.mean(), 
-                                                            Avg_Contr_size = X.premium_amount_18.mean(),
-                                                            Avg_MBids = X.max_bid.mean(),
-                                                            SD_MBids = sd(X.max_bid),
-                                                            N=n(X.leadID))
-
-# Adding info about what states lost possible customers are coming from 
-df_freq_state = df_lost >> group_by(X.state_18, X.Clusters) >> summarize(State_N = n(X.state_18))
-df_freq_state = df_freq_state.sort_values(by=['Clusters', 'State_N'], ascending = [True, False])
-df_freq_state = df_freq_state.pivot(index='Clusters', columns='state_18', values='State_N')
-cluster_df_lost['Most_Freq_States'] = pd.Series()
-for rows in range(0,len(df_freq_state)):
-    string = ", "
-    string = string.join(df_freq_state.loc[rows].sort_values(ascending=False).index[0:5])
-    cluster_df_lost.loc[rows, 'Most_Freq_States'] = string
-cluster_df_lost
 
 
 # In[ ]:
