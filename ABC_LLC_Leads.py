@@ -507,10 +507,16 @@ cluster_df_hc
 # 3. For this analysis, hierarchical cluster approach was chosen considering it provides failry good result regarding difference between clusters for each feature
 
 # #### <span style="color:sienna"> <i> Description of clusters of current customers:</i></span>
-# -> <b>Cluster 1:</b> Mixed men and women (with more men), older adults, with middle HH income, having average contract size the highest<br/>
-# -> <b>Cluster 2:</b> Exclusively men, middle aged, their HH income is around the median, having contract size above the median <br/>
-# -> <b>Cluster 3:</b> Exclusively women, middle aged, from low income HH, having contract size around the median  <br/>
-# -> <b>Cluster 4:</b> Exclusively men, youngest average age, more HH in the low income group, having contract less than average <br/>  
+# -> <b>Cluster 1:</b> Mixed men and women (with more men), older adults, with middle HH income, having average contract size the highest, mostly from NY, MA, WA<br/>
+# -> <b>Cluster 2:</b> Exclusively men, middle aged, their HH income is around the median, having contract size above the median, mostly from MA, WA, NJ <br/>
+# -> <b>Cluster 3:</b> Exclusively women, middle aged, from low income HH, having contract size around the median, mostly from NY, WA, MA <br/>
+# -> <b>Cluster 4:</b> Exclusively men, youngest average age, more HH in the low income group, having contract less than average, mostly from NY, IL, OH <br/>  
+
+# ##### <span style="color:sienna"> <i> Targeting strategy:</i></span>
+# In general, the first and forth clusters could be targeted considering the lower number of successfull sales there. Plus, first cluster's high average contract size can be a very good starting point to maximize income. In this group, we can see the largest amount of purchasing power.
+# The company is strong in NY, MA and WA, in almost every segment. Other states like NJ and CT could be also in the point of interest, since they are present in case of more than one segment.
+# Gender specificity can be recognized in the sample meaning that, it may be a good idea to target gender separately.
+# As regards age, the company is successfull in the middle aged customers, while may want to increase the number of successfull sales in the younger and older adult groups.
 
 # ### <span style="color:steelblue"> Customer segmentation on lost leads </span>
 
