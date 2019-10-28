@@ -13129,7 +13129,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="prompt input_prompt">In&nbsp;[165]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Importing general packages</span>
@@ -13156,6 +13156,10 @@ div#notebook {
 <span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="k">import</span> <span class="n">KMeans</span>
 <span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="k">import</span> <span class="n">AgglomerativeClustering</span>
 <span class="kn">import</span> <span class="nn">scipy.cluster.hierarchy</span> <span class="k">as</span> <span class="nn">shc</span>
+
+<span class="c1"># Importing packages for modeling</span>
+<span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="k">import</span> <span class="n">LogisticRegression</span>
+<span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="k">as</span> <span class="nn">sm</span>
 </pre></div>
 
     </div>
@@ -17404,10 +17408,29 @@ dtype: object</pre>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="--Description-of-clusters-of-current-customers:"><span style="color:sienna"> <i> Description of clusters of current customers:</i></span><a class="anchor-link" href="#--Description-of-clusters-of-current-customers:">&#182;</a></h4><p>-&gt; <b>Cluster 1:</b> Mixed men and women (with more men), older adults, with HH income close to lower middle, having average contract size the highest<br/>
--&gt; <b>Cluster 2:</b> Mixed men and women (with slightly more men), middle aged, from upper middle income group, having contract size in the fourth quartile <br/>
--&gt; <b>Cluster 3:</b> Exclusively men, youngest average age, from low income HH, having contract size in the first quartile <br/>
--&gt; <b>Cluster 4:</b> Exclusively women, middle aged, from low income HH, having contract size around the median  <br/></p>
+<h4 id="--Considerations-on-Cluster-analysis-"><span style="color:sienna"> <i> Considerations on Cluster analysis </i></span><a class="anchor-link" href="#--Considerations-on-Cluster-analysis-">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ol>
+<li>Clusters' characteristics are highly depends on encoding and standardization method. Mixed binnary and continous feature space makes the analysis challenging. Using Kmeans and hierarchical cluster algortihms provided fairly different outcomes.</li>
+<li>It is likely that the importance of features varies depending on standardization method. Variance between groups' by features varies by chosen method.</li>
+<li>For this analysis, hierarchical cluster approach was chosen considering it provides failry good result regarding difference between clusters for each feature</li>
+</ol>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="--Description-of-clusters-of-current-customers:"><span style="color:sienna"> <i> Description of clusters of current customers:</i></span><a class="anchor-link" href="#--Description-of-clusters-of-current-customers:">&#182;</a></h4><p>-&gt; <b>Cluster 1:</b> Mixed men and women (with more men), older adults, with middle HH income, having average contract size the highest<br/>
+-&gt; <b>Cluster 2:</b> Exclusively men, middle aged, their HH income is around the median, having contract size above the median <br/>
+-&gt; <b>Cluster 3:</b> Exclusively women, middle aged, from low income HH, having contract size around the median  <br/>
+-&gt; <b>Cluster 4:</b> Exclusively men, youngest average age, more HH in the low income group, having contract less than average <br/></p>
 
 </div>
 </div>
@@ -18834,7 +18857,7 @@ dtype: object</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[131]:</div>
+<div class="prompt input_prompt">In&nbsp;[137]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Converting created feature in df to timestamp</span>
@@ -18848,7 +18871,7 @@ dtype: object</pre>
                        <span class="n">X</span><span class="o">.</span><span class="n">created</span> <span class="o">&gt;=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="s1">&#39;2018-02-15 12:55:28&#39;</span><span class="p">),</span>
            <span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">state_18</span> <span class="o">==</span> <span class="s1">&#39;NY&#39;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">state_18</span> <span class="o">==</span> <span class="s1">&#39;MA&#39;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">state_18</span> <span class="o">==</span> <span class="s1">&#39;WA&#39;</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Customer base for Segment 1: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mp_cs1_df</span><span class="p">)))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Estimated income potential: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mp_cs1_df</span><span class="p">)</span><span class="o">*</span><span class="n">cluster_df_hc</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;Avg_Contr_size&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="s1">&#39; USD&#39;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Estimated income potential based on average contract size for segment 1: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mp_cs1_df</span><span class="p">)</span><span class="o">*</span><span class="n">cluster_df_hc</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;Avg_Contr_size&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="s1">&#39; USD&#39;</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -18866,7 +18889,7 @@ dtype: object</pre>
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Customer base for Segment 1: 5371
-Estimated income potential: 9179039.0 USD
+Estimated income potential based on average contract size for segment 1: 9179039.0 USD
 </pre>
 </div>
 </div>
@@ -18877,7 +18900,7 @@ Estimated income potential: 9179039.0 USD
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[134]:</div>
+<div class="prompt input_prompt">In&nbsp;[138]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Market potential for customer segment 2</span>
@@ -18889,7 +18912,7 @@ Estimated income potential: 9179039.0 USD
                        <span class="n">X</span><span class="o">.</span><span class="n">created</span> <span class="o">&gt;=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="s1">&#39;2018-02-15 12:55:28&#39;</span><span class="p">),</span>
                        <span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">state_18</span> <span class="o">==</span> <span class="s1">&#39;NJ&#39;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">state_18</span> <span class="o">==</span> <span class="s1">&#39;MA&#39;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">state_18</span> <span class="o">==</span> <span class="s1">&#39;WA&#39;</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Customer base for Segment 2: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mp_cs2_df</span><span class="p">)))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Estimated income potential: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mp_cs2_df</span><span class="p">)</span><span class="o">*</span><span class="n">cluster_df_hc</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;Avg_Contr_size&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="s1">&#39; USD&#39;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Estimated income potential based on average contract size for segment 2: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mp_cs2_df</span><span class="p">)</span><span class="o">*</span><span class="n">cluster_df_hc</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;Avg_Contr_size&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="s1">&#39; USD&#39;</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -18907,7 +18930,7 @@ Estimated income potential: 9179039.0 USD
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Customer base for Segment 2: 19379
-Estimated income potential: 18003091.0 USD
+Estimated income potential based on average contract size for segment 2: 18003091.0 USD
 </pre>
 </div>
 </div>
@@ -18918,7 +18941,7 @@ Estimated income potential: 18003091.0 USD
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[135]:</div>
+<div class="prompt input_prompt">In&nbsp;[139]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Market potential for customer segment 3</span>
@@ -18929,8 +18952,8 @@ Estimated income potential: 18003091.0 USD
                        <span class="n">X</span><span class="o">.</span><span class="n">estimated_household_income_18</span> <span class="o">&lt;=</span> <span class="mi">57000</span><span class="p">,</span>
                        <span class="n">X</span><span class="o">.</span><span class="n">created</span> <span class="o">&gt;=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="s1">&#39;2018-02-15 12:55:28&#39;</span><span class="p">),</span>
                        <span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">state_18</span> <span class="o">==</span> <span class="s1">&#39;NY&#39;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">state_18</span> <span class="o">==</span> <span class="s1">&#39;MA&#39;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">state_18</span> <span class="o">==</span> <span class="s1">&#39;WA&#39;</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Customer base for Segment 2: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mp_cs3_df</span><span class="p">)))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Estimated income potential: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mp_cs3_df</span><span class="p">)</span><span class="o">*</span><span class="n">cluster_df_hc</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;Avg_Contr_size&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="s1">&#39; USD&#39;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Customer base for Segment 3: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mp_cs3_df</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Estimated income potential based on average contract size for segment 3: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mp_cs3_df</span><span class="p">)</span><span class="o">*</span><span class="n">cluster_df_hc</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;Avg_Contr_size&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="s1">&#39; USD&#39;</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -18948,7 +18971,7 @@ Estimated income potential: 18003091.0 USD
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Customer base for Segment 2: 30181
-Estimated income potential: 28822855.0 USD
+Estimated income potential based on average contract size for segment 3: 28822855.0 USD
 </pre>
 </div>
 </div>
@@ -18959,7 +18982,7 @@ Estimated income potential: 28822855.0 USD
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[136]:</div>
+<div class="prompt input_prompt">In&nbsp;[140]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Market potential for customer segment 4</span>
@@ -18970,8 +18993,8 @@ Estimated income potential: 28822855.0 USD
                        <span class="n">X</span><span class="o">.</span><span class="n">estimated_household_income_18</span> <span class="o">&lt;=</span> <span class="mi">47420</span><span class="p">,</span>
                        <span class="n">X</span><span class="o">.</span><span class="n">created</span> <span class="o">&gt;=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="s1">&#39;2018-02-15 12:55:28&#39;</span><span class="p">),</span>
                        <span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">state_18</span> <span class="o">==</span> <span class="s1">&#39;NY&#39;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">state_18</span> <span class="o">==</span> <span class="s1">&#39;MA&#39;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">state_18</span> <span class="o">==</span> <span class="s1">&#39;WA&#39;</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Customer base for Segment 2: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mp_cs4_df</span><span class="p">)))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Estimated income potential: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mp_cs4_df</span><span class="p">)</span><span class="o">*</span><span class="n">cluster_df_hc</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="s1">&#39;Avg_Contr_size&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="s1">&#39; USD&#39;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Customer base for Segment 4: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mp_cs4_df</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Estimated income potential based on average contract size for segment 4: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mp_cs4_df</span><span class="p">)</span><span class="o">*</span><span class="n">cluster_df_hc</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="s1">&#39;Avg_Contr_size&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="s1">&#39; USD&#39;</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -18988,12 +19011,985 @@ Estimated income potential: 28822855.0 USD
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Customer base for Segment 2: 19959
-Estimated income potential: 16286544.0 USD
+<pre>Customer base for Segment 4: 19959
+Estimated income potential based on average contract size for segment 4: 16286544.0 USD
 </pre>
 </div>
 </div>
 
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="-How-much-more-Abc-LLC-should-bid-on-average-on-the-segments-to-increase-their-income-by-30%-"><span style="color:steelblue"> How much more Abc LLC should bid on average on the segments to increase their income by 30% </span><a class="anchor-link" href="#-How-much-more-Abc-LLC-should-bid-on-average-on-the-segments-to-increase-their-income-by-30%-">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><b> Strategy for analysis: </b> Running logistic regression to predict whether a lead will be won.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><b><i>Input variables:</b>&lt;/i&gt; <br/></p>
+<ul>
+<li>gender_18<br/></li>
+<li>age_18<br/></li>
+<li>estimated_household_income_18<br/></li>
+<li>max_bid <br/></li>
+</ul>
+<p><b><i>Target variable:</b>&lt;/i&gt; <br/></p>
+<ul>
+<li>won</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[159]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Creating new dataframe for the regression</span>
+<span class="n">df_log_enc</span> <span class="o">=</span> <span class="n">df</span> <span class="o">&gt;&gt;</span> <span class="n">select</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">leadID</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">gender_18</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">age_18</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">estimated_household_income_18</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">state_18</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">max_bid</span> <span class="p">)</span>
+
+<span class="c1"># One-hot-encoding categorical variables</span>
+
+<span class="n">cat_columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;gender_18&quot;</span><span class="p">,</span> <span class="s2">&quot;state_18&quot;</span><span class="p">]</span>
+<span class="n">df_log_enc</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">get_dummies</span><span class="p">(</span><span class="n">df_log_enc</span><span class="p">,</span>
+                            <span class="n">prefix_sep</span><span class="o">=</span><span class="s2">&quot;__&quot;</span><span class="p">,</span>
+                            <span class="n">columns</span><span class="o">=</span><span class="n">cat_columns</span><span class="p">,</span>
+                            <span class="n">drop_first</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">df_log_enc</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[159]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>leadID</th>
+      <th>age_18</th>
+      <th>estimated_household_income_18</th>
+      <th>max_bid</th>
+      <th>gender_18__2</th>
+      <th>state_18__CA</th>
+      <th>state_18__CO</th>
+      <th>state_18__CT</th>
+      <th>state_18__DC</th>
+      <th>state_18__FL</th>
+      <th>...</th>
+      <th>state_18__NY</th>
+      <th>state_18__OH</th>
+      <th>state_18__OK</th>
+      <th>state_18__PA</th>
+      <th>state_18__SC</th>
+      <th>state_18__TN</th>
+      <th>state_18__TX</th>
+      <th>state_18__VA</th>
+      <th>state_18__WA</th>
+      <th>state_18__WI</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>4</td>
+      <td>37.00</td>
+      <td>45000</td>
+      <td>22.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>30</td>
+      <td>43.35</td>
+      <td>65000</td>
+      <td>4.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>120</td>
+      <td>32.96</td>
+      <td>90000</td>
+      <td>5.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>258</td>
+      <td>34.82</td>
+      <td>65000</td>
+      <td>5.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>266</td>
+      <td>40.35</td>
+      <td>65000</td>
+      <td>6.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>348</td>
+      <td>36.00</td>
+      <td>35000</td>
+      <td>4.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>354</td>
+      <td>36.69</td>
+      <td>35000</td>
+      <td>4.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>360</td>
+      <td>55.02</td>
+      <td>35000</td>
+      <td>4.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>370</td>
+      <td>57.89</td>
+      <td>90000</td>
+      <td>4.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>382</td>
+      <td>34.89</td>
+      <td>76000</td>
+      <td>3.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+<p>10 rows × 33 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[162]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Using MinMaxScaler for Standardization: </span>
+<span class="n">mms</span> <span class="o">=</span> <span class="n">MinMaxScaler</span><span class="p">()</span>
+
+<span class="c1"># Scaling dataframe</span>
+<span class="n">df_columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;age_18&#39;</span><span class="p">,</span> <span class="s1">&#39;estimated_household_income_18&#39;</span><span class="p">,</span> <span class="s1">&#39;max_bid&#39;</span><span class="p">]</span>
+<span class="n">df_log_mm</span> <span class="o">=</span> <span class="n">mms</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">df_log_enc</span><span class="p">[[</span><span class="s1">&#39;age_18&#39;</span><span class="p">,</span> <span class="s1">&#39;estimated_household_income_18&#39;</span><span class="p">,</span> <span class="s1">&#39;max_bid&#39;</span><span class="p">]])</span>
+<span class="n">df_log_mm</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">df_log_mm</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">df_columns</span><span class="p">)</span>
+<span class="n">df_log_mm</span><span class="p">[</span><span class="s1">&#39;leadID&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">df_log_enc</span><span class="p">[</span><span class="s1">&#39;leadID&#39;</span><span class="p">])</span>
+<span class="n">df_log_mm</span> <span class="o">=</span> <span class="n">df_log_mm</span> <span class="o">&gt;&gt;</span> <span class="n">left_join</span><span class="p">(</span><span class="n">df_log_enc</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="s1">&#39;leadID&#39;</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">drop</span><span class="p">([</span><span class="s1">&#39;leadID&#39;</span><span class="p">,</span> <span class="s1">&#39;age_18_y&#39;</span><span class="p">,</span> <span class="s1">&#39;estimated_household_income_18_y&#39;</span><span class="p">,</span> <span class="s1">&#39;max_bid_y&#39;</span><span class="p">])</span>
+<span class="n">df_log_mm</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>C:\Users\ZsoltNagy\Anaconda3\lib\site-packages\sklearn\preprocessing\data.py:323: DataConversionWarning: Data with input dtype int64, float64 were all converted to float64 by MinMaxScaler.
+  return self.partial_fit(X, y)
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[162]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>age_18_x</th>
+      <th>estimated_household_income_18_x</th>
+      <th>max_bid_x</th>
+      <th>gender_18__2</th>
+      <th>state_18__CA</th>
+      <th>state_18__CO</th>
+      <th>state_18__CT</th>
+      <th>state_18__DC</th>
+      <th>state_18__FL</th>
+      <th>state_18__GA</th>
+      <th>...</th>
+      <th>state_18__NY</th>
+      <th>state_18__OH</th>
+      <th>state_18__OK</th>
+      <th>state_18__PA</th>
+      <th>state_18__SC</th>
+      <th>state_18__TN</th>
+      <th>state_18__TX</th>
+      <th>state_18__VA</th>
+      <th>state_18__WA</th>
+      <th>state_18__WI</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.318543</td>
+      <td>0.025510</td>
+      <td>0.728814</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.373360</td>
+      <td>0.045918</td>
+      <td>0.118644</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.283667</td>
+      <td>0.071429</td>
+      <td>0.152542</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.299724</td>
+      <td>0.045918</td>
+      <td>0.152542</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.347462</td>
+      <td>0.045918</td>
+      <td>0.186441</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>0.309910</td>
+      <td>0.015306</td>
+      <td>0.118644</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>0.315867</td>
+      <td>0.015306</td>
+      <td>0.118644</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>0.474102</td>
+      <td>0.015306</td>
+      <td>0.118644</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>0.498878</td>
+      <td>0.071429</td>
+      <td>0.118644</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>0.300328</td>
+      <td>0.057143</td>
+      <td>0.084746</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+<p>10 rows × 32 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[167]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">logmodel</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">Logit</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;won&#39;</span><span class="p">],</span> <span class="n">df_log_mm</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">logmodel</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">result</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Warning: Maximum number of iterations has been exceeded.
+         Current function value: 0.055973
+         Iterations: 35
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>C:\Users\ZsoltNagy\Anaconda3\lib\site-packages\statsmodels\base\model.py:508: ConvergenceWarning: Maximum Likelihood optimization failed to converge. Check mle_retvals
+  &#34;Check mle_retvals&#34;, ConvergenceWarning)
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[167]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<table class="simpletable">
+<caption>Logit Regression Results</caption>
+<tr>
+  <th>Dep. Variable:</th>        <td>won</td>       <th>  No. Observations:  </th>   <td>1360295</td>  
+</tr>
+<tr>
+  <th>Model:</th>               <td>Logit</td>      <th>  Df Residuals:      </th>   <td>1360263</td>  
+</tr>
+<tr>
+  <th>Method:</th>               <td>MLE</td>       <th>  Df Model:          </th>   <td>    31</td>   
+</tr>
+<tr>
+  <th>Date:</th>          <td>Mon, 28 Oct 2019</td> <th>  Pseudo R-squ.:     </th>   <td>0.4253</td>   
+</tr>
+<tr>
+  <th>Time:</th>              <td>11:46:27</td>     <th>  Log-Likelihood:    </th>  <td> -76140.</td>  
+</tr>
+<tr>
+  <th>converged:</th>           <td>False</td>      <th>  LL-Null:           </th> <td>-1.3250e+05</td>
+</tr>
+<tr>
+  <th> </th>                      <td> </td>        <th>  LLR p-value:       </th>   <td> 0.000</td>   
+</tr>
+</table>
+<table class="simpletable">
+<tr>
+                 <td></td>                    <th>coef</th>     <th>std err</th>      <th>z</th>      <th>P>|z|</th>  <th>[0.025</th>    <th>0.975]</th>  
+</tr>
+<tr>
+  <th>age_18_x</th>                        <td>   -9.8538</td> <td>    0.058</td> <td> -169.042</td> <td> 0.000</td> <td>   -9.968</td> <td>   -9.740</td>
+</tr>
+<tr>
+  <th>estimated_household_income_18_x</th> <td>   -7.5405</td> <td>    0.314</td> <td>  -24.045</td> <td> 0.000</td> <td>   -8.155</td> <td>   -6.926</td>
+</tr>
+<tr>
+  <th>max_bid_x</th>                       <td>   16.8875</td> <td>    0.078</td> <td>  217.554</td> <td> 0.000</td> <td>   16.735</td> <td>   17.040</td>
+</tr>
+<tr>
+  <th>gender_18__2</th>                    <td>   -0.3998</td> <td>    0.015</td> <td>  -27.421</td> <td> 0.000</td> <td>   -0.428</td> <td>   -0.371</td>
+</tr>
+<tr>
+  <th>state_18__CA</th>                    <td>   -4.3851</td> <td>    0.046</td> <td>  -94.492</td> <td> 0.000</td> <td>   -4.476</td> <td>   -4.294</td>
+</tr>
+<tr>
+  <th>state_18__CO</th>                    <td>   -6.3328</td> <td>    0.401</td> <td>  -15.785</td> <td> 0.000</td> <td>   -7.119</td> <td>   -5.547</td>
+</tr>
+<tr>
+  <th>state_18__CT</th>                    <td>   -2.8182</td> <td>    0.053</td> <td>  -52.808</td> <td> 0.000</td> <td>   -2.923</td> <td>   -2.714</td>
+</tr>
+<tr>
+  <th>state_18__DC</th>                    <td>   -3.1295</td> <td>    0.196</td> <td>  -15.970</td> <td> 0.000</td> <td>   -3.514</td> <td>   -2.745</td>
+</tr>
+<tr>
+  <th>state_18__FL</th>                    <td>   -3.2240</td> <td>    0.032</td> <td> -101.079</td> <td> 0.000</td> <td>   -3.287</td> <td>   -3.162</td>
+</tr>
+<tr>
+  <th>state_18__GA</th>                    <td>   -4.3809</td> <td>    0.075</td> <td>  -58.346</td> <td> 0.000</td> <td>   -4.528</td> <td>   -4.234</td>
+</tr>
+<tr>
+  <th>state_18__IA</th>                    <td>   -4.4669</td> <td>    0.191</td> <td>  -23.341</td> <td> 0.000</td> <td>   -4.842</td> <td>   -4.092</td>
+</tr>
+<tr>
+  <th>state_18__IL</th>                    <td>   -4.8090</td> <td>    0.100</td> <td>  -48.171</td> <td> 0.000</td> <td>   -5.005</td> <td>   -4.613</td>
+</tr>
+<tr>
+  <th>state_18__IN</th>                    <td>   -4.2123</td> <td>    0.101</td> <td>  -41.764</td> <td> 0.000</td> <td>   -4.410</td> <td>   -4.015</td>
+</tr>
+<tr>
+  <th>state_18__KS</th>                    <td>   -3.9753</td> <td>    0.145</td> <td>  -27.361</td> <td> 0.000</td> <td>   -4.260</td> <td>   -3.691</td>
+</tr>
+<tr>
+  <th>state_18__MA</th>                    <td>   -1.5135</td> <td>    0.027</td> <td>  -55.802</td> <td> 0.000</td> <td>   -1.567</td> <td>   -1.460</td>
+</tr>
+<tr>
+  <th>state_18__MI</th>                    <td>   -3.5236</td> <td>    0.064</td> <td>  -54.706</td> <td> 0.000</td> <td>   -3.650</td> <td>   -3.397</td>
+</tr>
+<tr>
+  <th>state_18__MN</th>                    <td>   -3.3019</td> <td>    0.074</td> <td>  -44.906</td> <td> 0.000</td> <td>   -3.446</td> <td>   -3.158</td>
+</tr>
+<tr>
+  <th>state_18__MO</th>                    <td>   -4.5906</td> <td>    0.119</td> <td>  -38.560</td> <td> 0.000</td> <td>   -4.824</td> <td>   -4.357</td>
+</tr>
+<tr>
+  <th>state_18__NC</th>                    <td>   -3.4736</td> <td>    0.055</td> <td>  -63.229</td> <td> 0.000</td> <td>   -3.581</td> <td>   -3.366</td>
+</tr>
+<tr>
+  <th>state_18__NE</th>                    <td>   -4.3296</td> <td>    0.215</td> <td>  -20.107</td> <td> 0.000</td> <td>   -4.752</td> <td>   -3.908</td>
+</tr>
+<tr>
+  <th>state_18__NJ</th>                    <td>   -2.8851</td> <td>    0.030</td> <td>  -95.155</td> <td> 0.000</td> <td>   -2.945</td> <td>   -2.826</td>
+</tr>
+<tr>
+  <th>state_18__NV</th>                    <td>   -5.7981</td> <td>    1.064</td> <td>   -5.449</td> <td> 0.000</td> <td>   -7.884</td> <td>   -3.713</td>
+</tr>
+<tr>
+  <th>state_18__NY</th>                    <td>   -1.6115</td> <td>    0.021</td> <td>  -77.929</td> <td> 0.000</td> <td>   -1.652</td> <td>   -1.571</td>
+</tr>
+<tr>
+  <th>state_18__OH</th>                    <td>   -4.2599</td> <td>    0.077</td> <td>  -55.505</td> <td> 0.000</td> <td>   -4.410</td> <td>   -4.109</td>
+</tr>
+<tr>
+  <th>state_18__OK</th>                    <td>   -4.5437</td> <td>    0.161</td> <td>  -28.277</td> <td> 0.000</td> <td>   -4.859</td> <td>   -4.229</td>
+</tr>
+<tr>
+  <th>state_18__PA</th>                    <td>   -4.2321</td> <td>    0.068</td> <td>  -62.203</td> <td> 0.000</td> <td>   -4.365</td> <td>   -4.099</td>
+</tr>
+<tr>
+  <th>state_18__SC</th>                    <td>   -3.9021</td> <td>    0.087</td> <td>  -44.901</td> <td> 0.000</td> <td>   -4.072</td> <td>   -3.732</td>
+</tr>
+<tr>
+  <th>state_18__TN</th>                    <td>   -4.6042</td> <td>    0.121</td> <td>  -38.079</td> <td> 0.000</td> <td>   -4.841</td> <td>   -4.367</td>
+</tr>
+<tr>
+  <th>state_18__TX</th>                    <td>   -3.7155</td> <td>    0.037</td> <td> -100.943</td> <td> 0.000</td> <td>   -3.788</td> <td>   -3.643</td>
+</tr>
+<tr>
+  <th>state_18__VA</th>                    <td>   -4.3590</td> <td>    0.075</td> <td>  -58.291</td> <td> 0.000</td> <td>   -4.506</td> <td>   -4.212</td>
+</tr>
+<tr>
+  <th>state_18__WA</th>                    <td>   -0.1659</td> <td>    0.036</td> <td>   -4.597</td> <td> 0.000</td> <td>   -0.237</td> <td>   -0.095</td>
+</tr>
+<tr>
+  <th>state_18__WI</th>                    <td>  -12.0799</td> <td>  121.821</td> <td>   -0.099</td> <td> 0.921</td> <td> -250.845</td> <td>  226.685</td>
+</tr>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[168]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[168]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>age_18_x                           5.254639e-05
+estimated_household_income_18_x    5.311175e-04
+max_bid_x                          2.158471e+07
+gender_18__2                       6.704518e-01
+state_18__CA                       1.246166e-02
+state_18__CO                       1.777019e-03
+state_18__CT                       5.971542e-02
+state_18__DC                       4.374148e-02
+state_18__FL                       3.979478e-02
+state_18__GA                       1.251380e-02
+state_18__IA                       1.148276e-02
+state_18__IL                       8.155998e-03
+state_18__IN                       1.481156e-02
+state_18__KS                       1.877345e-02
+state_18__MA                       2.201325e-01
+state_18__MI                       2.949354e-02
+state_18__MN                       3.681392e-02
+state_18__MO                       1.014706e-02
+state_18__NC                       3.100384e-02
+state_18__NE                       1.317251e-02
+state_18__NJ                       5.585021e-02
+state_18__NV                       3.033240e-03
+state_18__NY                       1.995851e-01
+state_18__OH                       1.412378e-02
+state_18__OK                       1.063407e-02
+state_18__PA                       1.452142e-02
+state_18__SC                       2.019874e-02
+state_18__TN                       1.000942e-02
+state_18__TX                       2.434421e-02
+state_18__VA                       1.279092e-02
+state_18__WA                       8.471149e-01
+state_18__WI                       5.672412e-06
+dtype: float64</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
 </div>
 </div>
 

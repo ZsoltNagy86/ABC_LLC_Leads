@@ -5,7 +5,7 @@
 
 # ### <span style="color:dimgray">Importing packages</span>
 
-# In[1]:
+# In[165]:
 
 
 # Importing general packages
@@ -32,6 +32,10 @@ from sklearn.preprocessing import RobustScaler
 from sklearn.cluster import KMeans
 from sklearn.cluster import AgglomerativeClustering
 import scipy.cluster.hierarchy as shc
+
+# Importing packages for modeling
+from sklearn.linear_model import LogisticRegression
+import statsmodels.api as sm
 
 
 # ### <span style="color:dimgray">Loading data</span>
@@ -496,11 +500,17 @@ cluster_df_hc
 
 # #### <span style="color:darkred"> Question 2: Analysis on customer segments that Abc LLC should target to maximize their income? </span>
 
+# #### <span style="color:sienna"> <i> Considerations on Cluster analysis </i></span>
+
+# 1. Clusters' characteristics are highly depends on encoding and standardization method. Mixed binnary and continous feature space makes the analysis challenging. Using Kmeans and hierarchical cluster algortihms provided fairly different outcomes.
+# 2. It is likely that the importance of features varies depending on standardization method. Variance between groups' by features varies by chosen method.
+# 3. For this analysis, hierarchical cluster approach was chosen considering it provides failry good result regarding difference between clusters for each feature
+
 # #### <span style="color:sienna"> <i> Description of clusters of current customers:</i></span>
-# -> <b>Cluster 1:</b> Mixed men and women (with more men), older adults, with HH income close to lower middle, having average contract size the highest<br/>
-# -> <b>Cluster 2:</b> Mixed men and women (with slightly more men), middle aged, from upper middle income group, having contract size in the fourth quartile <br/>
-# -> <b>Cluster 3:</b> Exclusively men, youngest average age, from low income HH, having contract size in the first quartile <br/>
-# -> <b>Cluster 4:</b> Exclusively women, middle aged, from low income HH, having contract size around the median  <br/>  
+# -> <b>Cluster 1:</b> Mixed men and women (with more men), older adults, with middle HH income, having average contract size the highest<br/>
+# -> <b>Cluster 2:</b> Exclusively men, middle aged, their HH income is around the median, having contract size above the median <br/>
+# -> <b>Cluster 3:</b> Exclusively women, middle aged, from low income HH, having contract size around the median  <br/>
+# -> <b>Cluster 4:</b> Exclusively men, youngest average age, more HH in the low income group, having contract less than average <br/>  
 
 # ### <span style="color:steelblue"> Customer segmentation on lost leads </span>
 
@@ -625,7 +635,7 @@ cluster_df_lost
 cluster_df_hc
 
 
-# In[131]:
+# In[137]:
 
 
 # Converting created feature in df to timestamp
@@ -639,10 +649,10 @@ mp_cs1_df = df >> mask(X.age_18 >=53,
                        X.created >= pd.to_datetime('2018-02-15 12:55:28'),
            (X.state_18 == 'NY') | (X.state_18 == 'MA') | (X.state_18 == 'WA'))
 print('Customer base for Segment 1: ' + str(len(mp_cs1_df)))
-print('Estimated income potential: ' + str(len(mp_cs1_df)*cluster_df_hc.loc[0,'Avg_Contr_size']) + str(' USD'))
+print('Estimated income potential based on average contract size for segment 1: ' + str(len(mp_cs1_df)*cluster_df_hc.loc[0,'Avg_Contr_size']) + str(' USD'))
 
 
-# In[134]:
+# In[138]:
 
 
 # Market potential for customer segment 2
@@ -654,10 +664,10 @@ mp_cs2_df = df >> mask(X.gender_18 == 1,
                        X.created >= pd.to_datetime('2018-02-15 12:55:28'),
                        (X.state_18 == 'NJ') | (X.state_18 == 'MA') | (X.state_18 == 'WA'))
 print('Customer base for Segment 2: ' + str(len(mp_cs2_df)))
-print('Estimated income potential: ' + str(len(mp_cs2_df)*cluster_df_hc.loc[1,'Avg_Contr_size']) + str(' USD'))
+print('Estimated income potential based on average contract size for segment 2: ' + str(len(mp_cs2_df)*cluster_df_hc.loc[1,'Avg_Contr_size']) + str(' USD'))
 
 
-# In[135]:
+# In[139]:
 
 
 # Market potential for customer segment 3
@@ -668,11 +678,11 @@ mp_cs3_df = df >> mask(X.gender_18 == 2,
                        X.estimated_household_income_18 <= 57000,
                        X.created >= pd.to_datetime('2018-02-15 12:55:28'),
                        (X.state_18 == 'NY') | (X.state_18 == 'MA') | (X.state_18 == 'WA'))
-print('Customer base for Segment 2: ' + str(len(mp_cs3_df)))
-print('Estimated income potential: ' + str(len(mp_cs3_df)*cluster_df_hc.loc[2,'Avg_Contr_size']) + str(' USD'))
+print('Customer base for Segment 3: ' + str(len(mp_cs3_df)))
+print('Estimated income potential based on average contract size for segment 3: ' + str(len(mp_cs3_df)*cluster_df_hc.loc[2,'Avg_Contr_size']) + str(' USD'))
 
 
-# In[136]:
+# In[140]:
 
 
 # Market potential for customer segment 4
@@ -683,8 +693,79 @@ mp_cs4_df = df >> mask(X.gender_18 == 1,
                        X.estimated_household_income_18 <= 47420,
                        X.created >= pd.to_datetime('2018-02-15 12:55:28'),
                        (X.state_18 == 'NY') | (X.state_18 == 'MA') | (X.state_18 == 'WA'))
-print('Customer base for Segment 2: ' + str(len(mp_cs4_df)))
-print('Estimated income potential: ' + str(len(mp_cs4_df)*cluster_df_hc.loc[3,'Avg_Contr_size']) + str(' USD'))
+print('Customer base for Segment 4: ' + str(len(mp_cs4_df)))
+print('Estimated income potential based on average contract size for segment 4: ' + str(len(mp_cs4_df)*cluster_df_hc.loc[3,'Avg_Contr_size']) + str(' USD'))
+
+
+# ### <span style="color:steelblue"> How much more Abc LLC should bid on average on the segments to increase their income by 30% </span>
+
+# <b> Strategy for analysis: </b> Running logistic regression to predict whether a lead will be won. 
+
+# <b><i>Input variables:</b></i> <br/>
+# - gender_18<br/>
+# - age_18<br/>
+# - estimated_household_income_18<br/>
+# - max_bid <br/>
+# 
+# <b><i>Target variable:</b></i> <br/>
+# - won
+
+# In[159]:
+
+
+# Creating new dataframe for the regression
+df_log_enc = df >> select(X.leadID, X.gender_18, X.age_18, X.estimated_household_income_18, X.state_18, X.max_bid )
+
+# One-hot-encoding categorical variables
+
+cat_columns = ["gender_18", "state_18"]
+df_log_enc = pd.get_dummies(df_log_enc,
+                            prefix_sep="__",
+                            columns=cat_columns,
+                            drop_first=True)
+
+df_log_enc.head(10)
+
+
+# In[162]:
+
+
+# Using MinMaxScaler for Standardization: 
+mms = MinMaxScaler()
+
+# Scaling dataframe
+df_columns = ['age_18', 'estimated_household_income_18', 'max_bid']
+df_log_mm = mms.fit_transform(df_log_enc[['age_18', 'estimated_household_income_18', 'max_bid']])
+df_log_mm = pd.DataFrame(df_log_mm, columns=df_columns)
+df_log_mm['leadID'] = list(df_log_enc['leadID'])
+df_log_mm = df_log_mm >> left_join(df_log_enc, by='leadID') >> drop(['leadID', 'age_18_y', 'estimated_household_income_18_y', 'max_bid_y'])
+df_log_mm.head(10)
+
+
+# In[167]:
+
+
+logmodel = sm.Logit(df['won'], df_log_mm)
+result = logmodel.fit()
+result.summary()
+
+
+# In[168]:
+
+
+np.exp(result.params)
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
 
 
 # In[ ]:
